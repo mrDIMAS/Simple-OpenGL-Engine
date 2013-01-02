@@ -50,26 +50,84 @@ if out_name != undefined then
 		
 		material = object.material
 		
+		local realMaterials = 0
+		local subMaterials  = 0
 		
 		if( material != undefined ) then
 		(
 			subMaterials = getNumSubmtls material 	
 			
 			if( subMaterials == 0 ) then
+				realMaterials = 1
+			else
+				realMaterials = subMaterials
+
+			writeLong file realMaterials 
+		)
+		
+		if( realMaterials > 0 ) then
+		(
+			if( subMaterials > 0 ) then
 			(
-				writeLong file 1
+				submtl = getSubmtl material i
+					
+				if submtl.diffuseMap != undefined then
+				(
+					diffuseMap = submtl.diffuseMap
+					
+					dfFile = filenamefrompath diffuseMap.filename
+					
+					writeString file dfFile 
+				)
+				else
+				(
+					writeByte file 0
+				)
 			)
 			else
 			(
-				writeLong file subMaterials 
+				if material.diffuseMap != undefined then
+				(
+					dfFile = filenamefrompath material.diffuseMap.filename
+					
+					writeString file dfFile 
+				)
+				else
+				(
+					writeByte file 0
+				)
 			)
+		)
 		
-			if( subMaterials > 0 ) then
+		if( material != undefined ) then
+		(
+					
+			
+			if( n_submtl == 0 ) then
 			(
-				for i = 1 to subMaterials do
+				n_submtl = 1
+				
+				
+				
+				if material.diffuseMap != undefined then
+				(
+					dfFile = filenamefrompath material.diffuseMap.filename
+					
+					writeString file dfFile 
+				)
+				else
+				(
+					writeByte file 0
+				)
+			)
+			else
+			(
+				writeLong file n_submtl
+				
+				for i = 1 to n_submtl do
 				(
 					submtl = getSubmtl material i
-						
+					
 					if submtl.diffuseMap != undefined then
 					(
 						diffuseMap = submtl.diffuseMap
@@ -84,26 +142,12 @@ if out_name != undefined then
 					)
 				)
 			)
-			else -- single material
-			(
-				if material.diffuseMap != undefined then
-				(
-					dfFile = filenamefrompath material.diffuseMap.filename
-					
-					writeString file dfFile 
-				)
-				else
-				(
-					writeByte file 0
-				)
-			)
 		)
 		else
 		(
-			writeLong file 0
-		)
-			
-		
+			writeLong file 1
+		)				
+					
 		for i = 1 to mesh.numverts do
 		(
 			vertex = getVert mesh i
