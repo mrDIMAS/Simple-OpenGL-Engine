@@ -111,6 +111,19 @@ void SceneNode::setPosition( const btVector3 & pos )
 	if( body )
 		body->setTransform( globalTransform );
 };
+
+void SceneNode::setGlobalPosition( const btVector3 & pos )
+{
+	if( parent )
+		localTransform.setOrigin( pos - parent->globalTransform.getOrigin() );
+	else
+		localTransform.setOrigin( pos );
+
+	applyChangesRelatively();
+
+	if( body )
+		body->setTransform( globalTransform );
+};
 	
 btVector3 SceneNode::getRelativePosition( bool global )
 {
@@ -142,18 +155,25 @@ void SceneNode::turn( const btVector3 & euler )
 		body->getTransform().setBasis( globalTransform.getBasis());
 };
 	
-btVector3 SceneNode::getRotation( bool global )
+btVector3 SceneNode::getRotation( )
 {		
 	float y, p, r;
 
-	if( global )
-		globalTransform.getBasis( ).getEulerYPR( y, p, r );
-	else
-		localTransform.getBasis( ).getEulerYPR( y, p, r );
+	localTransform.getBasis( ).getEulerYPR( y, p, r );
 
-	return btVector3( p, y, r );
+	return btVector3( p * RAD2DEG, y * RAD2DEG, r * RAD2DEG );
 };
 	
+
+btVector3 SceneNode::getGlobalRotation()
+{
+	float y, p, r;
+	
+	globalTransform.getBasis( ).getEulerYPR( y, p, r );
+
+	return btVector3( p * RAD2DEG, y * RAD2DEG, r * RAD2DEG );
+};
+
 void SceneNode::move( const btVector3 & speed )
 {
 	if( body )

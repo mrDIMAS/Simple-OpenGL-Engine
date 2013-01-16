@@ -11,9 +11,6 @@ Surface::~Surface( )
 	{
 		delete vertices.at( i );
 	};
-
-	if( texture )
-		delete texture;
 };
 
 bool Surface::addVertex( Vertex * v )

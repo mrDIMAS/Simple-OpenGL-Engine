@@ -323,11 +323,11 @@ public:
 					{
 						if( textures.at( matID ).size() )
 						{
-							Texture * texture =	new Texture();
+							//Texture * texture =	new Texture();
 
-							texture->loadTGA( textures.at( matID ).c_str() );
+							//texture->loadTGA( textures.at( matID ).c_str() );
 
-							surface->setTexture( texture );
+							surface->setTexture( Texture::loadTGA( textures.at( matID ).c_str() ) );
 						}
 					}
 
@@ -335,11 +335,11 @@ public:
 				}
 			}
 
-			mesh->setPosition( btVector3( px, py, pz ) );
-			mesh->setRotation( btVector3( rx, ry, rz ) );
-
 			if( objNum > 0 )
-				mesh->attachTo( this );
+				mesh->attachTo( this, 0 );
+
+			mesh->setGlobalPosition( btVector3( px, py, pz ) );
+			mesh->setRotation( btVector3( rx, ry, rz ) );
 		}
 
 		fclose( file );

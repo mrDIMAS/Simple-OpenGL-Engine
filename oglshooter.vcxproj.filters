@@ -98,5 +98,14 @@
     <ClInclude Include="RigidBody.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="SoundCore.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Listener.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Sound.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

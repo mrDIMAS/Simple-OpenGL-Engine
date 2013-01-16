@@ -70,6 +70,13 @@ public:
 	{
 		glLightf( id, GL_QUADRATIC_ATTENUATION, att );
 	};
+
+	void setRange( float r )
+	{
+		setConstantAttenuation( 0 );
+		setLinearAttenuation( 1.0f / r );
+		setQuadraticAttenuation( 5.0f / ( r * r ) );
+	};
 };
 
 
@@ -98,5 +105,30 @@ public:
 		applyTransform();
 
 		glLightfv( id, GL_POSITION, vpos );		
+	};
+};
+
+class SpotLight : public Light
+{
+public:
+	virtual void render()
+	{
+		float vpos[ 4 ] = { 0, 0, 0, 1 };
+		float vdir[ 3 ] = { 0, 0, 0 };
+
+		applyTransform();
+
+		glLightfv( id, GL_POSITION, vpos );	
+		glLightfv( id, GL_SPOT_DIRECTION, vdir );		
+	};
+
+	void setCutoffAngle( float a )
+	{
+		glLightf( id, GL_SPOT_CUTOFF, a );
+	};
+
+	void setExp( float e )
+	{
+		glLightf( id, GL_SPOT_EXPONENT, e ); 
 	};
 };

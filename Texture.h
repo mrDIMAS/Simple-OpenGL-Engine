@@ -22,6 +22,11 @@ struct TGA
 
 class Texture
 {
+	void _loadTGA( const char * filename, byte mr, byte mg, byte mb );
+
+	Texture()
+	{
+	}
 public:
 	uint id;
 	uint width;
@@ -29,9 +34,15 @@ public:
 	uint bitsPerPixel;
 	uint format;
 
-	void loadTGA( const char * filename );
+	static map<string,Texture*> textures;
 
-	void loadBMP( const char * filename );
+	static Texture * loadTGA( const char * filename, byte mr = 255, byte mg = 255, byte mb = 255 );
+
+	static void deleteAll()
+	{
+		for( auto it = textures.begin(); it != textures.end(); it++ )
+			delete it->second;
+	};
 
 	void bind();
 };

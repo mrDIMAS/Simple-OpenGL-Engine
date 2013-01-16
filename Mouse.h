@@ -34,6 +34,16 @@ public:
 		saveCurrentCoord();
 	};
 
+	bool isLeftButtonPressed( )
+	{
+		return SDL_GetMouseState( 0, 0 ) & SDL_BUTTON( SDL_BUTTON_LEFT );
+	};
+
+	bool isRightButtonPressed( )
+	{
+		return SDL_GetMouseState( 0, 0 ) & SDL_BUTTON( SDL_BUTTON_RIGHT );
+	};
+
 	int getXSpeed()
 	{
 		return sx;

@@ -28,12 +28,12 @@ private:
 
 		dynamicsWorld->setDebugDrawer( new MyDebugDrawer );
 
-		dynamicsWorld->setGravity( btVector3( 0.f, -9.81f, 0.f ));	
+		dynamicsWorld->setGravity( btVector3( 0.f, -20.81f, 0.f ));	
 	};
 
 	void updatePhysics()
 	{
-		dynamicsWorld->stepSimulation( 1.0f / 60.0f, 1 );
+		dynamicsWorld->stepSimulation( 1.0f / 60.0f, 10 );
 	};
 
 public:
@@ -78,9 +78,12 @@ public:
 		glLightModeli( GL_LIGHT_MODEL_COLOR_CONTROL, GL_SEPARATE_SPECULAR_COLOR );
 
 		glEnable      ( GL_LIGHTING );
-
+		
 		glEnable	  ( GL_CULL_FACE );
 		glCullFace	  ( GL_BACK );
+
+		glEnable	  ( GL_ALPHA_TEST );
+		glAlphaFunc   ( GL_GREATER, 0.95 );
 
 		initPhysics();
 	}

@@ -40,9 +40,20 @@ public:
 
 		const SDL_VideoInfo * info = SDL_GetVideoInfo();
 
-		gluPerspective( 70, (float)info->current_w / (float)info->current_h, 0.1, 1024 );		
+		gluPerspective( 55, (float)info->current_w / (float)info->current_h, 0.1, 1024 );		
 
 		activeCamera = this;
+	};
+
+	void setFOV( float fovInDeg )
+	{
+		glMatrixMode( GL_PROJECTION );
+
+		glLoadIdentity();
+
+		const SDL_VideoInfo * info = SDL_GetVideoInfo();
+
+		gluPerspective( fovInDeg, (float)info->current_w / (float)info->current_h, 0.1, 1024 );	
 	};
 
 	void setClearColor( Color color )

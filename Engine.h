@@ -14,3 +14,6 @@
 #include "Mouse.h"
 #include "Keyboard.h"
 #include "Camera.h"
+#include "SoundCore.h"
+#include "Listener.h"
+#include "Sound.h"

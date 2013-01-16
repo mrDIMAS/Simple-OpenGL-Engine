@@ -54,6 +54,74 @@ public:
 	{
 		return body->getLinearVelocity();
 	};
+
+	void setMass( float mass )
+	{
+		btVector3 inertia;
+
+		body->getCollisionShape()->calculateLocalInertia( mass, inertia );
+
+		body->setMassProps( mass, inertia );
+	};
+
+	bool onGround()
+	{
+		int numManifolds = dynamicsWorld->getDispatcher()->getNumManifolds();
+
+		for (int i=0;i < numManifolds; i++)
+		{
+			btPersistentManifold* contactManifold = dynamicsWorld->getDispatcher()->getManifoldByIndexInternal(i);
+			btCollisionObject* obA				  = static_cast<btCollisionObject*>(contactManifold->getBody0());
+			btCollisionObject* obB				  = static_cast<btCollisionObject*>(contactManifold->getBody1());
+			btCollisionObject *thisObj			  = static_cast<btCollisionObject*>( body );
+
+			if( obA == thisObj || obB == thisObj )
+			{
+				if( contactManifold->getNumContacts() > 0 )
+				{
+					int numContacts = contactManifold->getNumContacts();
+
+					for (int j=0;j<numContacts;j++)
+					{
+						btManifoldPoint& pt = contactManifold->getContactPoint(j);
+						if (pt.getDistance()<0.f)
+						{
+							const btVector3& ptA = pt.getPositionWorldOnA();
+							const btVector3& ptB = pt.getPositionWorldOnB();
+							const btVector3& normalOnB = pt.m_normalWorldOnB;
+
+							if( normalOnB.y() > 0.5 )
+								return true;
+						}
+					}
+					
+				};
+			};
+		}
+
+		return false;
+	};	
+
+	bool hasCollision( )
+	{
+		int numManifolds = dynamicsWorld->getDispatcher()->getNumManifolds();
+
+		for (int i=0;i < numManifolds; i++)
+		{
+			btPersistentManifold* contactManifold =  dynamicsWorld->getDispatcher()->getManifoldByIndexInternal(i);
+			btCollisionObject* obA = static_cast<btCollisionObject*>(contactManifold->getBody0());
+			btCollisionObject* obB = static_cast<btCollisionObject*>(contactManifold->getBody1());
+			btCollisionObject *thisObj = static_cast<btCollisionObject*>( body );
+
+			if( obA == thisObj || obB == thisObj )
+			{
+				if( contactManifold->getNumContacts() > 0 )
+					return true;
+			};
+		}
+
+		return false;
+	};
 };
 
 class SphereBody : public RigidBody
@@ -66,6 +134,7 @@ public:
 		body = new btRigidBody( mass, (btMotionState*)( new btDefaultMotionState() ), shape, inertia );
 		body->setActivationState( 1 );
 		dynamicsWorld->addRigidBody( body );
+		body->setUserPointer( this );
 	};
 };
 
@@ -99,7 +168,7 @@ public:
 		};		
 
 		body = new btRigidBody( 0, (btMotionState*)( new btDefaultMotionState()), (btCollisionShape*)( new btBvhTriangleMeshShape( mesh, true, true ) ), inertia );
-
+		body->setUserPointer( this );
 		dynamicsWorld->addRigidBody( body );
 	}
 
@@ -136,7 +205,8 @@ public:
 		convex->calculateLocalInertia( mass, inertia );
 
 		body = new btRigidBody( mass, (btMotionState*)( new btDefaultMotionState()), ( btCollisionShape* )( convex ), inertia );
-
+		body->setUserPointer( this );
+		body->activate( true );
 		dynamicsWorld->addRigidBody( body );
 	};
 };

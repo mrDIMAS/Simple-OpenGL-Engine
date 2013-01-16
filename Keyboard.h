@@ -16,4 +16,11 @@ public:
 
 		return keyboard[ key ];
 	};
+
+	bool isLShiftPressed( )
+	{
+		SDLMod mod = SDL_GetModState();
+
+		return mod & KMOD_LSHIFT;
+	};
 } keyboard;

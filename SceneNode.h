@@ -29,11 +29,13 @@ public:
 	virtual void attachTo( SceneNode * parent, bool saveRelativePositionAndOrientation = true );
 	virtual void detachFromParent( );
 	virtual void setPosition( const btVector3 & pos );
+	virtual void setGlobalPosition( const btVector3 & pos );
 	virtual btVector3 getRelativePosition( bool global = false );
 	virtual btVector3 getGlobalPosition( bool global = false );
 	virtual void setRotation( const btVector3 & euler );
 	virtual void turn( const btVector3 & euler );
-	virtual btVector3 getRotation( bool global = false );
+	virtual btVector3 getRotation();
+	virtual btVector3 getGlobalRotation();
 	virtual void move( const btVector3 & speed );
 	virtual void setScale( const btVector3 & scale );
 	virtual void setRigidBody( RigidBody * body );	

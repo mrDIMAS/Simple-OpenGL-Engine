@@ -12,6 +12,11 @@
 #include <algorithm>
 #include <iostream>
 #include <vld.h>
+#include <map>
+#include "al.h"
+#include "alc.h"
+#include "thirdparty\Ogg\ogg.h"
+#include "thirdparty\Vorbis\vorbisfile.h"
 
 #include "btBulletCollisionCommon.h"
 #include "btBulletDynamicsCommon.h"
@@ -25,6 +30,10 @@
 #pragma comment( lib, "glu32" )
 #pragma comment( lib, "glaux" )
 #pragma comment( lib, "vld" )
+#pragma comment( lib, "openal32" )
+#pragma comment( lib, "thirdparty/ogg/libogg_static.lib" )
+#pragma comment( lib, "thirdparty/vorbis/libvorbis_static.lib" )
+#pragma comment( lib, "thirdparty/vorbis/libvorbisfile_static.lib" )
 
 #ifndef _DEBUG
 
@@ -40,11 +49,13 @@
 
 #endif
 
+
 extern btDiscreteDynamicsWorld * dynamicsWorld;
 
 typedef unsigned int uint;
 typedef unsigned short ushort;
 typedef unsigned long ulong;
+typedef unsigned char byte;
 
 #define DEG2RAD ( 3.141592654f / 180.0f )
 #define RAD2DEG ( 180.0f / 3.141592654f )
