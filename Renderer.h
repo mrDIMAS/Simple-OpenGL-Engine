@@ -2,6 +2,7 @@
 
 #include "Common.h"
 #include "DebugDrawer.h"
+#include "SDL_syswm.h"
 
 btDiscreteDynamicsWorld	* dynamicsWorld = 0;
 
@@ -28,7 +29,7 @@ private:
 
 		dynamicsWorld->setDebugDrawer( new MyDebugDrawer );
 
-		dynamicsWorld->setGravity( btVector3( 0.f, -20.81f, 0.f ));	
+		dynamicsWorld->setGravity( btVector3( 0.f, -25.81f, 0.f ));	
 	};
 
 	void updatePhysics()
@@ -58,32 +59,43 @@ public:
 		const SDL_VideoInfo * info = SDL_GetVideoInfo();
 
 		if( !fullscreen )
-			SDL_Surface * back = SDL_SetVideoMode( 1024, 768, 32, SDL_DOUBLEBUF | SDL_OPENGL | SDL_HWSURFACE );
+		{
+			SDL_Surface * back = SDL_SetVideoMode( info->current_w, info->current_h, 32, SDL_DOUBLEBUF | SDL_OPENGL | SDL_HWSURFACE );
+			SDL_SysWMinfo inf;		
+			SDL_VERSION(&inf.version);
+			SDL_GetWMInfo( &inf );		
+			SetWindowPos( inf.window, 0, 0, 0, 0, 0, SWP_NOREPOSITION|SWP_NOZORDER|SWP_NOSIZE|SWP_NOACTIVATE );
+		}
 		else
 			SDL_Surface * back = SDL_SetVideoMode( info->current_w, info->current_h, 32, SDL_DOUBLEBUF | SDL_OPENGL | SDL_HWSURFACE | SDL_FULLSCREEN );
 
 		glEnable	  ( GL_MULTISAMPLE );
+
 		glEnable	  ( GL_DEPTH_TEST  );
+		glDepthFunc   ( GL_LEQUAL );
+
 		glEnable	  ( GL_TEXTURE_2D  );
-		glEnable	  ( GL_NORMALIZE );
-		glShadeModel  ( GL_SMOOTH );
+		//glEnable	  ( GL_NORMALIZE );
+		
 		glClearColor  ( 0, 0, 0, 1 );
 		glClearDepth  ( 1.0f );
-		glDepthFunc   ( GL_LEQUAL );
+		
 		glHint        ( GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST );	
-		glBlendFunc   ( GL_SRC_ALPHA, GL_ONE );  
 
-		glLightModeli( GL_LIGHT_MODEL_LOCAL_VIEWER, GL_TRUE );
-		glLightModeli( GL_LIGHT_MODEL_TWO_SIDE, GL_FALSE );
-		glLightModeli( GL_LIGHT_MODEL_COLOR_CONTROL, GL_SEPARATE_SPECULAR_COLOR );
+		//glEnable( GL_BLEND );
+		glBlendFunc( GL_SRC_ALPHA, GL_ONE );  
 
 		glEnable      ( GL_LIGHTING );
+		glShadeModel  ( GL_SMOOTH );
+		glLightModeli( GL_LIGHT_MODEL_LOCAL_VIEWER, GL_TRUE );
+		glLightModeli( GL_LIGHT_MODEL_TWO_SIDE, GL_FALSE );
+		glLightModeli( GL_LIGHT_MODEL_COLOR_CONTROL, GL_SEPARATE_SPECULAR_COLOR );		
 		
 		glEnable	  ( GL_CULL_FACE );
 		glCullFace	  ( GL_BACK );
 
 		glEnable	  ( GL_ALPHA_TEST );
-		glAlphaFunc   ( GL_GREATER, 0.95 );
+		glAlphaFunc   ( GL_GREATER, 0.8 );
 
 		initPhysics();
 	}
@@ -102,6 +114,16 @@ public:
 			dynamicsWorld->debugDrawWorld();
 
 		SDL_GL_SwapBuffers();
+	};
+
+	void beginRender2D( )
+	{
+
+	};
+
+	void endRender2D()
+	{
+
 	};
 
 	void update()

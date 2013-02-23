@@ -5,22 +5,8 @@
 class Keyboard
 {
 public:
-	Keyboard( )
-	{
+	Keyboard( );
+	bool keyPressed( uint8_t key );
+	bool isLShiftPressed( );
+};
 
-	};
-
-	bool keyPressed( uint8_t key )
-	{
-		uint8_t * keyboard = SDL_GetKeyState( 0 );
-
-		return keyboard[ key ];
-	};
-
-	bool isLShiftPressed( )
-	{
-		SDLMod mod = SDL_GetModState();
-
-		return mod & KMOD_LSHIFT;
-	};
-} keyboard;

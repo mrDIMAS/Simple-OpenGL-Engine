@@ -22,7 +22,7 @@ struct TGA
 
 class Texture
 {
-	void _loadTGA( const char * filename, byte mr, byte mg, byte mb );
+	void _loadTGA( const char * filename, bool useMips );
 
 	Texture()
 	{
@@ -33,10 +33,11 @@ public:
 	uint height;
 	uint bitsPerPixel;
 	uint format;
+	uint filter;
 
 	static map<string,Texture*> textures;
 
-	static Texture * loadTGA( const char * filename, byte mr = 255, byte mg = 255, byte mb = 255 );
+	static Texture * loadTGA( const char * filename, bool useMips = false );
 
 	static void deleteAll()
 	{

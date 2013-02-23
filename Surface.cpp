@@ -2,25 +2,27 @@
 
 Surface::Surface()
 {
-	texture = 0;
+	material = 0;
 };
 
 Surface::~Surface( )
 {
-	for( uint i = 0; i < vertices.size(); i++ )
-	{
-		delete vertices.at( i );
-	};
+	vertices.clear();
+
+	if( material )
+		delete material;
 };
 
-bool Surface::addVertex( Vertex * v )
+bool Surface::addVertex( const Vertex & v )
 {
 	uint vertexIndex  = 0;
 	bool foundIdentic = false;
 
 	for( uint i = 0; i < vertices.size(); i++ )
 	{
-		if( (*vertices.at( i )) == ( *v ) )
+		if( ( vertices.at( i )  == Point3( v.x, v.y, v.z ) )    &&
+			( normals.at( i )   == Point3( v.nx, v.ny, v.nz ) ) && 
+			( texCoords.at( i ) == Point2( v.tx, v.ty ) ) )
 		{
 			vertexIndex = i ;
 
@@ -32,17 +34,50 @@ bool Surface::addVertex( Vertex * v )
 	{
 		vertexIndex = vertices.size();
 
-		vertices.push_back( v );				
+		vertices.push_back( Point3( v.x, v.y, v.z ) );		
+		normals.push_back( Point3( v.nx, v.ny, v.nz ) );
+		texCoords.push_back( Point2( v.tx, v.ty ));
 	}
 
 	indices.push_back( vertexIndex );
-
+	
 	return foundIdentic;
 };
 
-Vertex * Surface::getVertex( uint num )
+bool Surface::addVertex( const Point3 & pos, const Point3 & norm, const Point2 & tc )
 {
-	return vertices[ num ];
+	uint vertexIndex  = 0;
+	bool foundIdentic = false;
+
+	for( uint i = 0; i < vertices.size(); i++ )
+	{
+		if( ( vertices.at( i )  == pos ) &&
+			( normals.at( i )   == norm) && 
+			( texCoords.at( i ) == tc ) )
+		{
+			vertexIndex = i ;
+
+			foundIdentic = true;
+		}
+	};
+
+	if( foundIdentic == false )
+	{
+		vertexIndex = vertices.size();
+
+		vertices.push_back( pos );		
+		normals.push_back( norm );
+		texCoords.push_back( tc );
+	}
+
+	indices.push_back( vertexIndex );
+	
+	return foundIdentic;
+};
+
+Point3 * Surface::getVertex( uint num )
+{
+	return &vertices[ num ];
 };
 
 uint Surface::getVertexCount()
@@ -65,34 +100,28 @@ uint Surface::getIndexCount()
 	return indices.size();
 };
 
-void Surface::setTexture( Texture * texture )
+void Surface::setMaterial( Material * material )
 {
-	this->texture = texture;
+	this->material = material;
 }
 
 void Surface::render()
 {
-	if( texture )
-		texture->bind();
+	if( material )
+		material->bind();
 
-	glBegin( GL_TRIANGLES );
-
-	for( uint i = 0; i < indices.size(); i += 3 )
+	if( vertices.size() && indices.size() )
 	{
-		for( uint indexNum = 0; indexNum < 3; indexNum++ )
-		{
-			if( i + indexNum >= indices.size())
-				int gfgzdfg= 0;
+		glEnableClientState( GL_VERTEX_ARRAY );
+		glEnableClientState( GL_NORMAL_ARRAY );
+		glEnableClientState( GL_TEXTURE_COORD_ARRAY );
 
-			Vertex * v = vertices[ indices[ i + indexNum ]];
-
-			glTexCoord3f( v->tx, v->ty, 1 );
-			glNormal3f( v->nx, v->ny, v->nz );
-			glVertex3f( v->x, v->y, v->z );
-		}
-	};		
-
-	glEnd();
+		glVertexPointer  ( 3, GL_FLOAT, 0, &vertices [ 0 ] );
+		glNormalPointer  (    GL_FLOAT, 0, &normals  [ 0 ] );
+		glTexCoordPointer( 2, GL_FLOAT, 0, &texCoords[ 0 ] );
+		
+		glDrawElements( GL_TRIANGLES, indices.size(), GL_UNSIGNED_INT, (void*)&indices[ 0 ] );		
+	};
 
 	glBindTexture( GL_TEXTURE_2D, 0 );
 };

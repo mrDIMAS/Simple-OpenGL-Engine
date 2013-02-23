@@ -49,8 +49,12 @@
 
 #endif
 
+class Keyboard;
+class Mouse;
 
 extern btDiscreteDynamicsWorld * dynamicsWorld;
+extern Keyboard keyboard;
+extern Mouse mouse;
 
 typedef unsigned int uint;
 typedef unsigned short ushort;

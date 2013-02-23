@@ -26,18 +26,28 @@ public:
 		return c;
 	};
 
-	float getRed()
+	const float * getElements( ) const 
+	{
+		return c;
+	};
+
+	float getRed() const
 	{
 		return r;
 	};
 
-	float getGreen()
+	float getGreen() const
 	{
 		return g;
 	};
 
-	float getBlue()
+	float getBlue() const
 	{
 		return b;
+	};
+
+	float getAlpha() const
+	{
+		return a;
 	};
 };

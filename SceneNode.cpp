@@ -38,6 +38,8 @@ SceneNode::SceneNode( )
 {
 	parent = 0;
 	body   = 0;
+	pickObj= 0;
+	userPointer = 0;
 	scale = btVector3( 1, 1, 1 );
 	localTransform.setIdentity( );
 	globalTransform.setIdentity( );
@@ -52,6 +54,11 @@ SceneNode::~SceneNode( )
 
 	if( body )
 		delete body;
+};
+
+string & SceneNode::getName( )
+{
+	return name;
 };
 
 SceneNode * SceneNode::getChild( uint num )

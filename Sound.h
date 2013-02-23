@@ -35,11 +35,10 @@ public:
 
 	void render( )
 	{
-		btVector3 position	= globalTransform.getOrigin();				 float fpos[ 3 ]  = { position.x(), position.y(), position.z() };
-		btVector3 look		= globalTransform.getBasis().getColumn( 0 ).normalize(); float flook[ 3 ] = { look.x(), look.y(), look.z() };		
+		btVector3 position = globalTransform.getOrigin();				 
+		float fpos[ 3 ] = { position.x(), position.y(), position.z() };
 
 		alSourcefv( channel, AL_POSITION, fpos );
-		alSourcefv( channel, AL_DIRECTION, flook );
 	};
 
 	static void updateAll()

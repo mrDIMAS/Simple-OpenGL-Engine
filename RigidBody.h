@@ -159,9 +159,9 @@ public:
 
 			for( uint ic = 0; ic < surface->getIndexCount(); ic+=3 )
 			{
-				Vertex * a = surface->getVertex( surface->getIndex( ic + 0 ) );
-				Vertex * b = surface->getVertex( surface->getIndex( ic + 1 ) );
-				Vertex * c = surface->getVertex( surface->getIndex( ic + 2 ) );
+				Point3 * a = surface->getVertex( surface->getIndex( ic + 0 ) );
+				Point3 * b = surface->getVertex( surface->getIndex( ic + 1 ) );
+				Point3 * c = surface->getVertex( surface->getIndex( ic + 2 ) );
 				
 				mesh->addTriangle( btVector3( a->x, a->y, a->z ), btVector3( b->x, b->y, b->z), btVector3( c->x, c->y, c->z) );
 			};
@@ -196,7 +196,7 @@ public:
 
 			for( uint vc = 0; vc < surface->getVertexCount(); vc++ )
 			{
-				Vertex * vertex = surface->getVertex( vc );
+				Point3 * vertex = surface->getVertex( vc );
 
 				convex->addPoint( btVector3( vertex->x, vertex->y, vertex->z ));
 			};

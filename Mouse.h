@@ -71,4 +71,4 @@ public:
 
 		return y;
 	};
-} mouse;
+};

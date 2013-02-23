@@ -50,7 +50,6 @@ if out_name != undefined then
 		
 		material = object.material
 		
-		
 		if( material != undefined ) then
 		(
 			subMaterials = getNumSubmtls material 	
