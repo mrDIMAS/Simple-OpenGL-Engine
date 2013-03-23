@@ -1,7 +1,10 @@
 #include "SceneNode.h"
 
+vector<SceneNode*> SceneNode::nodes;
+
 void SceneNode::renderNodeAndChilds( )
 {
+
 	glPushMatrix(); // Save matrix
 
 	if( body )
@@ -17,7 +20,8 @@ void SceneNode::renderNodeAndChilds( )
 		globalTransform.setBasis( globalTransform.getBasis().scaled( scale ));
 	}		
 	
-	render();
+	if( visible )
+		render();
 
 	glPopMatrix(); // Restore matrix
 
@@ -34,15 +38,90 @@ void SceneNode::applyChangesRelatively()
 		globalTransform = localTransform;
 };
 
+void SceneNode::setUserPointer( void * pointer )
+{
+	userPointer = pointer;
+};
+
+void * SceneNode::getUserPointer( )
+{
+	return userPointer;
+};
+
+float SceneNode::getDistanceTo( SceneNode * node )
+{
+	return globalTransform.getOrigin().distance( node->globalTransform.getOrigin() );
+};
+	
+void SceneNode::setName( string &newName )
+{
+	name=newName;
+};
+
+void SceneNode::hide()
+{
+	visible = false;
+};
+
+void SceneNode::show( ) 
+{
+	visible = true;
+};
+
+SceneNode * SceneNode::getNodeByRay( Ray * ray )
+{
+	SceneNode * result = 0;
+
+	bool intersects = false;
+
+	if( pickObj )
+		intersects = pickObj->intersectByRay( ray );
+
+	if( !intersects )
+	{
+		for( uint i = 0; i < childs.size(); i++ )
+		{
+			result = childs.at( i )->getNodeByRay( ray );
+
+			if( result )
+				break;
+		};
+	}
+	else
+	{
+		result = this;
+	};
+
+	return result;
+};
+
+void SceneNode::setPickObject( PickObject * pickObject )
+{
+	pickObj = pickObject;
+	pickObj->pos = &globalTransform.getOrigin();
+};
+
+uint SceneNode::getChildCount()
+{
+	return childs.size();
+};
+
+RigidBody * SceneNode::getRigidBody()
+{
+	return body;
+};
+
 SceneNode::SceneNode( )
 {
 	parent = 0;
 	body   = 0;
 	pickObj= 0;
 	userPointer = 0;
+	show();
 	scale = btVector3( 1, 1, 1 );
 	localTransform.setIdentity( );
 	globalTransform.setIdentity( );
+	nodes.push_back( this );
 };
 
 SceneNode::~SceneNode( )
@@ -51,6 +130,11 @@ SceneNode::~SceneNode( )
 	{
 		delete childs.at( i );
 	};
+
+	auto it = find( nodes.begin(), nodes.end(), this );
+
+	if( it != nodes.end())
+		nodes.erase( it );
 
 	if( body )
 		delete body;

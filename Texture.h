@@ -28,6 +28,15 @@ class Texture
 	{
 	}
 public:
+	enum 
+	{
+		QUALITY_BEST,
+		QUALITY_HIGH,
+		QUALITY_MEDIUM,
+		QUALITY_LOW,
+		QUALITY_EXTRA_LOW,
+	};
+
 	uint id;
 	uint width;
 	uint height;
@@ -36,6 +45,8 @@ public:
 	uint filter;
 
 	static map<string,Texture*> textures;
+
+	static int loadQuality;
 
 	static Texture * loadTGA( const char * filename, bool useMips = false );
 

@@ -9,7 +9,7 @@ protected:
 	Color ambient, diffuse, specular, emission;
 	float shininess;
 public:
-	Material() : ambient( 0, 0, 0, 255 ), diffuse( 255, 255, 255, 255 ), specular( 0, 0, 0, 255 ), emission( 0, 0, 0, 255 )
+	Material() : ambient( 22, 22, 22, 255 ), diffuse( 255, 255, 255, 255 ), specular( 0, 0, 0, 255 ), emission( 0, 0, 0, 255 )
 	{
 		texture   = 0;
 		shininess = 0;

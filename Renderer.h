@@ -3,6 +3,7 @@
 #include "Common.h"
 #include "DebugDrawer.h"
 #include "SDL_syswm.h"
+#include "Keyboard.h"
 
 btDiscreteDynamicsWorld	* dynamicsWorld = 0;
 
@@ -34,12 +35,12 @@ private:
 
 	void updatePhysics()
 	{
-		dynamicsWorld->stepSimulation( 1.0f / 60.0f, 10 );
+		dynamicsWorld->stepSimulation( 1.0f / 60.0f, -0 );
 	};
 
 public:
 	
-	Renderer( bool fullscreen = false )
+	Renderer( uint w = 0, uint h = 0, bool fullscreen = false )
 	{	
 		SDL_Init( SDL_INIT_EVERYTHING );
 		
@@ -58,16 +59,25 @@ public:
 
 		const SDL_VideoInfo * info = SDL_GetVideoInfo();
 
+		if( w == 0 )
+			w = info->current_w;
+		if( h == 0 )
+			h = info->current_h;
+
+		uint flags = SDL_DOUBLEBUF | SDL_OPENGL | SDL_HWSURFACE;
+
+		if( fullscreen )
+			flags |= SDL_FULLSCREEN;
+
+		SDL_Surface * back = SDL_SetVideoMode( w, h, 32, flags );
+
 		if( !fullscreen )
 		{
-			SDL_Surface * back = SDL_SetVideoMode( info->current_w, info->current_h, 32, SDL_DOUBLEBUF | SDL_OPENGL | SDL_HWSURFACE );
 			SDL_SysWMinfo inf;		
 			SDL_VERSION(&inf.version);
 			SDL_GetWMInfo( &inf );		
 			SetWindowPos( inf.window, 0, 0, 0, 0, 0, SWP_NOREPOSITION|SWP_NOZORDER|SWP_NOSIZE|SWP_NOACTIVATE );
 		}
-		else
-			SDL_Surface * back = SDL_SetVideoMode( info->current_w, info->current_h, 32, SDL_DOUBLEBUF | SDL_OPENGL | SDL_HWSURFACE | SDL_FULLSCREEN );
 
 		glEnable	  ( GL_MULTISAMPLE );
 
@@ -113,18 +123,11 @@ public:
 		if( renderPhysicsWireframeDebug )
 			dynamicsWorld->debugDrawWorld();
 
+		keyboard.update();
+
 		SDL_GL_SwapBuffers();
 	};
 
-	void beginRender2D( )
-	{
-
-	};
-
-	void endRender2D()
-	{
-
-	};
 
 	void update()
 	{

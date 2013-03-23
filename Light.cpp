@@ -9,7 +9,7 @@ Light::Light()
 	enable();
 	setDiffuseColor( Color( 255, 255, 255, 255 ));
 	setSpecularColor( Color( 255, 255, 255, 255 ));
-	setAmbientColor( Color( 0, 0, 0, 0 ));
+	setAmbientColor( Color( 80, 80, 80, 80 ));
 	setLinearAttenuation( 0 );
 	setConstantAttenuation( 1 );
 	setQuadraticAttenuation( 0 );

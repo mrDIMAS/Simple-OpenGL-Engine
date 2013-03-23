@@ -1,8 +1,6 @@
 #pragma once
 
 #include "SceneNode.h"
-#include "Image.h"
-#include "Text.h"
 
 class Root : public SceneNode
 {
@@ -43,8 +41,6 @@ public:
 
 	void destroy( )
 	{
-		Text::deleteAll();
-		Image::deleteAll();
 		Texture::deleteAll();
 		delete root;
 	};
@@ -54,7 +50,7 @@ public:
 		node->attachTo( root );
 	};
 
-	void render2D( )
+	void beginRender2D()
 	{
 		const SDL_VideoInfo * info = SDL_GetVideoInfo();
 
@@ -70,10 +66,10 @@ public:
 
 		// set identity view matrix
 		glMatrixMode( GL_MODELVIEW ); glPushMatrix(); glLoadIdentity();
+	};
 
-		Image::renderAll();
-		Text::renderAll();
-
+	void endRender2D()
+	{
 		glPopAttrib();
 		glPopAttrib();
 

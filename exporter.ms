@@ -29,6 +29,11 @@ if out_name != undefined then
 			
 		local CM = ( object.transform * ( inverse WorldMatrix ) ) * zRot
 
+		userProp = getUserPropBuffer object
+		
+		writeLong file userProp.count
+		writeString file userProp
+		
 		writeLong file mesh.numverts 		
 		writeLong file mesh.numtverts
 		writeLong file mesh.numfaces

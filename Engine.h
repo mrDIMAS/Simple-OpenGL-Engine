@@ -17,7 +17,9 @@
 #include "SoundCore.h"
 #include "Listener.h"
 #include "Sound.h"
-#include "Image.h"
-#include "Text.h"
+#include "ImageNode.h"
+#include "TextNode.h"
+#include "ButtonNode.h"
+#include "RectNode.h"
 #include <time.h>
 #include "PickAABB.h"

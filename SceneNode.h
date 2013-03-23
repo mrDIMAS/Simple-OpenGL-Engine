@@ -3,6 +3,67 @@
 #include "Common.h"
 #include "RigidBody.h"
 #include "PickSphere.h"
+#include "Scripting.h"
+
+using namespace Dynamic;
+/*
+#include <unordered_map>
+
+class Value
+{
+private:
+	string val;
+public:
+	Value( )
+	{
+	};
+
+	Value( const string & value )
+	{
+		setAsString( value );
+	};
+
+	Value( const float & value )
+	{
+		setAsNumber( value );
+	};
+
+	void setAsString( const string & value )
+	{
+		val = value;
+	};
+
+	void setAsNumber( const float & value )
+	{
+		char buf[ 32 ] = { 0 };	sprintf( buf, "%f", value );
+		val = buf;
+	};
+
+	string getAsString( )
+	{
+		return val;
+	};
+
+	float getAsNumber( )
+	{
+		return atof( val.c_str() );
+	};
+
+	operator const char * ()
+	{
+		return val.c_str();
+	};
+
+	operator string () 
+	{
+		return val;
+	};
+
+	bool operator == ( const Value & value )
+	{
+		return val == value.val;
+	};
+};*/
 
 class SceneNode
 {
@@ -11,20 +72,21 @@ protected:
 	btTransform localTransform;
 	btVector3 scale;
 	vector< SceneNode* > childs;
-
 	RigidBody * body;
 	PickObject * pickObj;
 	SceneNode * parent;
 	void * userPointer;
 	string name;
 	virtual void render() = 0;
-
 	friend class Camera;
 	friend class Scene;
-	
+	bool visible;
 	void applyChangesRelatively();
-public:	 
-	SceneNode( );
+	//unordered_map< string, Value> properties;	
+public:
+	Dynamic::Parser::ValueMap properties;	
+	static vector<SceneNode*> nodes;
+	SceneNode( );	
 	virtual ~SceneNode( );
 	SceneNode * getChild( uint num );
 	void applyTransform();
@@ -42,57 +104,73 @@ public:
 	virtual void setScale( const btVector3 & scale );
 	virtual void setRigidBody( RigidBody * body );	
 	virtual void renderNodeAndChilds( );
-	virtual void setUserPointer( void * pointer )
-	{
-		userPointer = pointer;
-	};
-	virtual void * getUserPointer( )
-	{
-		return userPointer;
-	};
 	string & getName( );
-	void setName( string &newName )
+	virtual void setUserPointer( void * pointer );
+	virtual void * getUserPointer( );
+	float getDistanceTo( SceneNode * node );
+	void setName( string &newName );
+	void hide();
+	void show( ) ;
+	
+	SceneNode * findByNameProp( string & name )
 	{
-		name=newName;
-	};
-	SceneNode * getNodeByRay( Ray * ray )
-	{
+		
 		SceneNode * result = 0;
 
-		bool intersects = false;
-
-		if( pickObj )
-			intersects = pickObj->intersectByRay( ray );
-
-		if( !intersects )
+		if( hasProperty( "name" ))
+		{
+			if( properties[ "name" ].getStr() == name )
+				result = this;
+		}
+		else
 		{
 			for( uint i = 0; i < childs.size(); i++ )
 			{
-				result = childs.at( i )->getNodeByRay( ray );
+				result = childs.at( i )->findByNameProp( name );
 
 				if( result )
 					break;
 			};
-		}
-		else
-		{
-			result = this;
 		};
 
 		return result;
 	};
+	
+	/*
+	static SceneNode * findByName( string name )
+	{
+		for( uint i = 0; i < nodes.size(); i++ )
+		{
+			SceneNode * node = nodes.at( i );
 
-	void setPickObject( PickObject * pickObject )
+			if( node->hasProperty( "name
+		};
+	};*/
+
+	bool hasProperty( string name )
 	{
-		pickObj = pickObject;
-		pickObj->pos = &globalTransform.getOrigin();
+		auto it = properties.find( name );
+
+		return it != properties.end();
 	};
-	uint getChildCount()
+
+	void addProperty( const string & name, const Value & val )
 	{
-		return childs.size();
+		properties[ name ] = val;
 	};
-	RigidBody * getRigidBody()
+
+	Value & getProperty( const string & name ) 
 	{
-		return body;
+		return (*properties.find( name )).second;
 	};
+
+	void setProperty( const string & name, const Value & val )
+	{
+		(*properties.find( name )).second = val;
+	};
+
+	SceneNode * getNodeByRay( Ray * ray );
+	void setPickObject( PickObject * pickObject );
+	uint getChildCount();
+	RigidBody * getRigidBody();
 };

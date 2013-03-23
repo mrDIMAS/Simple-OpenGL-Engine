@@ -12,10 +12,14 @@ private:
 public:
 	int lx, ly;
 	int sx, sy;
+	int lmbs;
+	int rmbs;
 
 	Mouse( )
 	{
 		sx = sy = 0;
+		lmbs = 0;
+		rmbs = 0;
 		saveCurrentCoord();
 	};
 
@@ -31,6 +35,9 @@ public:
 		sx = getX() - lx;
 		sy = getY() - ly;
 
+		lmbs = SDL_GetMouseState( 0, 0 ) & SDL_BUTTON( SDL_BUTTON_LEFT );
+		rmbs = SDL_GetMouseState( 0, 0 ) & SDL_BUTTON( SDL_BUTTON_RIGHT );
+
 		saveCurrentCoord();
 	};
 
@@ -44,6 +51,14 @@ public:
 		return SDL_GetMouseState( 0, 0 ) & SDL_BUTTON( SDL_BUTTON_RIGHT );
 	};
 
+	bool lmbHit( )
+	{
+		return SDL_GetMouseState( 0, 0 ) & SDL_BUTTON( SDL_BUTTON_LEFT ) & ( ~lmbs );
+	};
+	bool rmbHit( )
+	{
+		return SDL_GetMouseState( 0, 0 ) & SDL_BUTTON( SDL_BUTTON_RIGHT ) & ( ~rmbs );
+	};
 	int getXSpeed()
 	{
 		return sx;
@@ -52,6 +67,12 @@ public:
 	int getYSpeed()
 	{
 		return sy;
+	};
+
+	void flush()
+	{
+		sy = 0;
+		sx = 0;
 	};
 
 	int getX()

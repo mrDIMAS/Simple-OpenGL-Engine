@@ -1,5 +1,8 @@
 #pragma once
 
+#pragma warning( disable : 4244 )
+#pragma warning( disable : 4305 )
+
 #include "SDL.h"
 #include "SDL_main.h"
 #include "SDL_opengl.h"

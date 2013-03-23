@@ -33,7 +33,7 @@ Camera::Camera()
 
 	const SDL_VideoInfo * info = SDL_GetVideoInfo();
 
-	gluPerspective( 60, (float)info->current_w / (float)info->current_h, 0.1, 1024 );		
+	gluPerspective( 60, (float)info->current_w / (float)info->current_h, 0.1, 4096 );		
 
 	activeCamera = this;
 

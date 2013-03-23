@@ -80,9 +80,22 @@ void Mesh::loadEO( const char * filename )
 		if( objNum > 0 ) // otherwise next object became as a child of root
 			mesh = new Mesh;
 
+		ulong upCount;			fread( &upCount, sizeof( upCount ), 1, file );
+
+		char symbol; fread( &symbol, sizeof( symbol ), 1, file );				
+		string propBuffer;
+		while( symbol )
+		{
+			propBuffer.push_back( symbol );
+
+			fread( &symbol, sizeof( symbol ), 1, file );
+		};
+
+		parsePropBuffer( mesh, propBuffer );
+
 		ulong vertexCount;			fread( &vertexCount, sizeof( vertexCount ), 1, file );
 		ulong textureCoordCount;	fread( &textureCoordCount, sizeof( textureCoordCount ), 1, file );
-		ulong faceCount;			fread( &faceCount, sizeof( faceCount ), 1, file );							
+		ulong faceCount;			fread( &faceCount, sizeof( faceCount ), 1, file );	
 
 		float px, py, pz, rx, ry, rz;
 
@@ -97,7 +110,7 @@ void Mesh::loadEO( const char * filename )
 		fread( &rz, sizeof( rz ), 1, file );
 
 		// read name
-		char symbol; fread( &symbol, sizeof( symbol ), 1, file );		
+		fread( &symbol, sizeof( symbol ), 1, file );		
 		
 		while( symbol )
 		{
@@ -233,6 +246,8 @@ void Mesh::loadEO( const char * filename )
 
 		mesh->setGlobalPosition( btVector3( px, py, pz ) );
 		mesh->setRotation( btVector3( rx, ry, rz ) );
+
+		applyProperties( mesh );
 	}
 
 	fclose( file );
