@@ -71,6 +71,8 @@ void Light::setRange( float r )
 	setConstantAttenuation( 0 );
 	setLinearAttenuation( 1.0f / r );
 	setQuadraticAttenuation( 5.0f / ( r * r ) );
+
+	range = r;
 };
 
 unsigned char Light::count = 0;

@@ -58,8 +58,7 @@ public:
 		glMatrixMode( GL_PROJECTION );	glPushMatrix(); glLoadIdentity();
 		gluOrtho2D( 0, info->current_w, info->current_h, 0 );
 
-		glPushAttrib( GL_LIGHTING );		
-		glPushAttrib( GL_CULL_FACE );
+		glPushAttrib( GL_ENABLE_BIT );		
 
 		glDisable( GL_LIGHTING );
 		glDisable( GL_CULL_FACE );
@@ -70,7 +69,6 @@ public:
 
 	void endRender2D()
 	{
-		glPopAttrib();
 		glPopAttrib();
 
 		glMatrixMode( GL_MODELVIEW );

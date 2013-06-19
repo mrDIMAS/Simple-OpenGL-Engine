@@ -8,6 +8,7 @@ protected:
 	GLenum id;
 	static unsigned char count;	
 	float jitterFactor;
+	float range;
 public:
 	Light();
 	void enable( );
@@ -21,6 +22,12 @@ public:
 	void setQuadraticAttenuation( float att );
 	void setRange( float r );
 	void setJitter( float j );
+	void setRangeMult( float rm )
+	{
+		setConstantAttenuation( 0 );
+		setLinearAttenuation( 1.0f / ( range * rm ) );
+		setQuadraticAttenuation( 5.0f / ( range * range * rm ) );
+	};
 };
 
 class DirectionalLight : public Light

@@ -10,6 +10,8 @@ ButtonNode::ButtonNode( int w, int h, Font * font, const char * t) : RectNode( 0
 	text = new TextNode( font, 0, 0, t, w );
 	text->setPosition( text->getWidth() / 2, ( h - text->getHeight() ) / 2 );
 	text->attachTo( frame );
+
+	focus = 0;
 };
 
 bool ButtonNode::isPressed( )
@@ -25,10 +27,19 @@ void ButtonNode::onRender()
 	{	
 		frame->setColor( Color( 0, 255, 0, 255 ));
 		text->setColor( Color( 0, 255, 0, 255 ));
+
+		if( !focus )
+		{
+			pfPlaySound( pfCreateSound( pfDataLoad( "data/sounds/menuhit.ogg" ), false, true ));
+
+			focus = true;
+		};
 	}
 	else
 	{	
 		frame->setColor( Color( 200, 0, 0, 255 ));
 		text->setColor( Color( 200, 0, 0, 255 ));
+
+		focus = false;
 	}
 };

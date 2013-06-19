@@ -96,12 +96,14 @@
     <ClCompile Include="RectNode.cpp" />
     <ClCompile Include="Scene.cpp" />
     <ClCompile Include="SceneNode.cpp" />
+    <ClCompile Include="Shader.cpp" />
     <ClCompile Include="Surface.cpp" />
     <ClCompile Include="TextNode.cpp" />
     <ClCompile Include="Texture.cpp" />
     <ClCompile Include="Vertex.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="ParticleSystem.h" />
     <ClInclude Include="Scripting.h" />
     <ClInclude Include="ButtonNode.h" />
     <ClInclude Include="Camera.h" />
@@ -112,7 +114,6 @@
     <ClInclude Include="Font.h" />
     <ClInclude Include="GUINode.h" />
     <ClInclude Include="ImageNode.h" />
-    <ClInclude Include="Listener.h" />
     <ClInclude Include="PickAABB.h" />
     <ClInclude Include="PickObject.h" />
     <ClInclude Include="PickSphere.h" />
@@ -129,8 +130,7 @@
     <ClInclude Include="Scene.h" />
     <ClInclude Include="SceneNode.h" />
     <ClInclude Include="Service.h" />
-    <ClInclude Include="Sound.h" />
-    <ClInclude Include="SoundCore.h" />
+    <ClInclude Include="Shader.h" />
     <ClInclude Include="Surface.h" />
     <ClInclude Include="TextNode.h" />
     <ClInclude Include="Texture.h" />
@@ -138,6 +138,8 @@
     <ClInclude Include="Vertex.h" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="data\shaders\main.fs" />
+    <None Include="data\shaders\main.vs" />
     <None Include="default.cfg" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

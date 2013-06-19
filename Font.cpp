@@ -17,7 +17,7 @@ Font::Font( const char * name, bool italic, bool underline )
 
 	cellSize = 32;
 
-	HFONT font = CreateFontA( cellSize, 0, 0, 0, FW_BOLD, italic, underline, 0, RUSSIAN_CHARSET, OUT_TT_PRECIS, CLIP_DEFAULT_PRECIS, PROOF_QUALITY, FF_DONTCARE | DEFAULT_PITCH, name );
+	HFONT font = CreateFontA( cellSize, 0, 0, 0, FW_SEMIBOLD, italic, underline, 0, RUSSIAN_CHARSET, OUT_TT_PRECIS, CLIP_DEFAULT_PRECIS, CLEARTYPE_QUALITY, FF_DONTCARE | DEFAULT_PITCH, name );
 
 	SelectObject( dc, font );
 
@@ -54,13 +54,19 @@ Font::Font( const char * name, bool italic, bool underline )
 	byte * newPixels = new byte[ texSize * texSize * 4 ];
 
 	uint n = 0;
-
-	for( uint i = 0; i < texSize * texSize * 4; i+=4 )
-	{
+	/*
 		newPixels[ i + 0 ] = 255;
 		newPixels[ i + 1 ] = 255;
 		newPixels[ i + 2 ] = 255;
-		newPixels[ i + 3 ] = ~pixels[ n ];
+		newPixels[ i + 3 ] = ~pixels[ n ];*/
+	for( uint i = 0; i < texSize * texSize * 4; i+=4 )
+	{
+		newPixels[ i + 0 ] = ~pixels[ n + 0 ];
+		newPixels[ i + 1 ] = ~pixels[ n + 1 ];
+		newPixels[ i + 2 ] = ~pixels[ n + 2 ];
+
+
+		newPixels[ i + 3 ] = ~( pixels[ n + 0 ] / 3 + pixels[ n + 1 ] / 3 + pixels[ n + 2 ] / 3 );
 
 		n+=3;
 	};
@@ -171,4 +177,6 @@ void Font::drawSymbol( int x, int y, int c, float scalerx,float scalery )
 		glTexCoord2f( tx, ty );
 		glVertex3f(   px, py + ph, 0 );
 	glEnd();
+
+	glBindTexture( GL_TEXTURE_2D, 0 );
 };

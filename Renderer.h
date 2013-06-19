@@ -4,8 +4,25 @@
 #include "DebugDrawer.h"
 #include "SDL_syswm.h"
 #include "Keyboard.h"
+#include "Shader.h"
 
 btDiscreteDynamicsWorld	* dynamicsWorld = 0;
+
+unsigned int globalRenderFlags = GRF_USELIGHT;
+
+PFNGLCREATESHADERPROC glCreateShader   = 0;
+PFNGLDELETESHADERPROC glDeleteShader   = 0;
+PFNGLSHADERSOURCEPROC glShaderSource   = 0;
+PFNGLCOMPILESHADERPROC glCompileShader = 0;
+PFNGLCREATEPROGRAMPROC glCreateProgram = 0;
+PFNGLDELETEPROGRAMPROC glDeleteProgram = 0;
+PFNGLATTACHSHADERPROC glAttachShader = 0;
+PFNGLLINKPROGRAMPROC glLinkProgram = 0;
+PFNGLUSEPROGRAMPROC glUseProgram = 0;
+PFNGLGETSHADERINFOLOGPROC glGetShaderInfoLog = 0;
+PFNGLACTIVETEXTUREPROC glActiveTexture = 0;
+PFNGLGETUNIFORMLOCATIONPROC glGetUniformLocation = 0;
+PFNGLUNIFORM1IPROC glUniform1i = 0;
 
 class Renderer
 {
@@ -14,7 +31,6 @@ private:
 	btCollisionDispatcher					* collisionDispatcher;
 	btBroadphaseInterface					* broadphase;
 	btSequentialImpulseConstraintSolver		* solver;	
-
 	void initPhysics()
 	{
 		btVector3 worldMin( -10000, -10000, -10000 );
@@ -33,11 +49,37 @@ private:
 		dynamicsWorld->setGravity( btVector3( 0.f, -25.81f, 0.f ));	
 	};
 
+	void initSound()
+	{
+		pfSystemCreateLogFile( "ProjectF.log" );
+
+		pfSystemEnableMessagesOutputToConsole();
+		pfSystemEnableMessagesOutputToLogFile();
+
+		pfSystemInit();
+	};
+
 	void updatePhysics()
 	{
 		dynamicsWorld->stepSimulation( 1.0f / 60.0f, -0 );
 	};
 
+	void initShaderSubsystem( )
+	{
+		glCreateShader  = (PFNGLCREATESHADERPROC)SDL_GL_GetProcAddress( "glCreateShader" );
+		glDeleteShader  = (PFNGLDELETESHADERPROC)SDL_GL_GetProcAddress( "glDeleteShader" );
+		glShaderSource  = (PFNGLSHADERSOURCEPROC)SDL_GL_GetProcAddress( "glShaderSource" );
+		glCompileShader = (PFNGLCOMPILESHADERPROC)SDL_GL_GetProcAddress( "glCompileShader" );
+		glCreateProgram = (PFNGLCREATEPROGRAMPROC)SDL_GL_GetProcAddress( "glCreateProgram" );
+		glDeleteProgram = (PFNGLDELETEPROGRAMPROC)SDL_GL_GetProcAddress( "glDeleteProgram" );
+		glAttachShader = (PFNGLATTACHSHADERPROC)SDL_GL_GetProcAddress( "glAttachShader" );
+		glLinkProgram = (PFNGLLINKPROGRAMPROC)SDL_GL_GetProcAddress( "glLinkProgram" );
+		glUseProgram = (PFNGLUSEPROGRAMPROC)SDL_GL_GetProcAddress( "glUseProgram" );
+		glGetShaderInfoLog = (PFNGLGETSHADERINFOLOGPROC)SDL_GL_GetProcAddress( "glGetShaderInfoLog" );
+		glActiveTexture = (PFNGLACTIVETEXTUREPROC)SDL_GL_GetProcAddress( "glActiveTexture" );
+		glGetUniformLocation = (PFNGLGETUNIFORMLOCATIONPROC)SDL_GL_GetProcAddress( "glGetUniformLocation" );
+		glUniform1i = (PFNGLUNIFORM1IPROC)SDL_GL_GetProcAddress( "glUniform1i" );
+	};
 public:
 	
 	Renderer( uint w = 0, uint h = 0, bool fullscreen = false )
@@ -108,6 +150,12 @@ public:
 		glAlphaFunc   ( GL_GREATER, 0.8 );
 
 		initPhysics();
+
+		initSound();
+
+		initShaderSubsystem();
+
+		g_default_shader = new Shader( "data/shaders/main.vs", "data/shaders/main.fs" );
 	}
 
 	void beginRender()
@@ -122,6 +170,8 @@ public:
 
 		if( renderPhysicsWireframeDebug )
 			dynamicsWorld->debugDrawWorld();
+
+		pfSystemUpdate();
 
 		keyboard.update();
 
@@ -161,5 +211,7 @@ public:
 		delete defaultCollision;
 
 		SDL_Quit( );
+
+		pfSystemDestroy();
 	};
 };

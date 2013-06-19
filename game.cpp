@@ -18,6 +18,9 @@ int curResH = defResH;
 float wScaleFactor = 1;
 float hScaleFactor = 1;
 
+World * world = 0;
+Player * player = 0;
+
 Dynamic::Parser::ValueMap generalParameters;
 
 // map parser 
@@ -40,8 +43,6 @@ public:
 
 	};
 };
-
-
 
 Font * font = 0;
 
@@ -105,7 +106,7 @@ public:
 		RectNode * frame = new RectNode( -40, -5, newItem->getWidth(), newItem->getHeight() + 5, true );
 		frame->setColor( Color( 100, 0, 0, 255 ));
 		frame->setDepth( 0.0001 );
-		frame->attachTo( newItem );
+		frame->attachTo( newItem );		
 
 		resortItems();
 	};
@@ -333,6 +334,7 @@ public:
 		note->setScaler( 0.5, 0.5 );
 		notes.push_back( note );
 		visNote = notes.size() - 1;		
+		pfPlaySound( pfCreateSound( pfDataLoad( "data/sounds/note.ogg", false ), false, true ), 1 );
 		show();
 	};
 
@@ -369,9 +371,10 @@ class Player
 {
 public:
 	Pivot  * pivot;
+	Pivot * stepsEmitter;
+	Pivot * lookPoint;
 	Camera * camera;
 	PointLight * flashlight;
-	vector< Sound * > stepSounds;
 	float pathLen;
 	float health;
 	SceneNode * pickedItem;
@@ -393,7 +396,8 @@ public:
 	{
 		if( pathLen > 200 )
 		{
-			stepSounds.at( rand() % stepSounds.size() )->play( camera );
+			//stepSounds.at( rand() % stepSounds.size() )->play( camera );
+			stepsEmitter->playRandomSoundFromGroup( "step", true );
 
 			pathLen = 0;
 		};
@@ -406,6 +410,12 @@ public:
 			if( item->getProperty( "item" ).getStr() == "heal" )
 				health += item->getProperty( "contentcount" ).getNum() ;
 		};
+
+	};
+
+	void stop( )
+	{
+		pivot->getRigidBody()->setLinearVelocity( btVector3( 0, 0, 0 ));
 	};
 
 	void update( )
@@ -419,6 +429,14 @@ public:
 			doorInfo->render();
 
 		Scene::getInstance()->endRender2D();	
+
+
+
+		btVector3 look = lookPoint->getGlobalPosition( true )  -  camera->getGlobalPosition( true );
+		float flook[ ] = { look.x(), look.y(), look.z() };
+		float fup[ ] =  { 0, 1, 0 };
+
+		pfSetListenerOrientation( flook, fup );
 
 		if( !inventory->isVisible() && !notes->isVisible() )
 		{
@@ -524,7 +542,7 @@ public:
 						{
 							if( pickedNode->getProperty( "item" ).getStr() != "note" )
 							{
-								inventory->addItem( pickedNode );									
+								inventory->addItem( pickedNode );		
 							}
 							else
 							{
@@ -569,7 +587,7 @@ public:
 		}
 		else
 		{
-		
+			stop();
 		};
 
 		if( keyboard.keyHit( SDLK_TAB ))
@@ -661,31 +679,40 @@ public:
 		pickedItem = 0;		
 		flashLightCharge = 20;
 		health = 100;
+
 		pivot = new Pivot();
 		
+		stepsEmitter = new Pivot();
+		stepsEmitter->attachTo( pivot );
+		stepsEmitter->setPosition( btVector3( 0, 0, 1.5 ));
+
 		pivot->setRigidBody( new SphereBody( 1, 3 ));		
 		pivot->getRigidBody()->getPhysBody()->setAngularFactor( btVector3( 0, 0, 0 ));
 		pivot->getRigidBody()->getPhysBody()->setAnisotropicFriction( btVector3( 1, 0, 1 ));
 		pivot->setPosition( pos );
+		pivot->addProperty( "name", "player" );
 
 		camera = new Camera();
 		camera->setClearColor( Color( 0, 0, 0, 255 ));
 		camera->attachTo( pivot ); 
 		camera->setPosition( btVector3( 0, 2.5, 0 ));
 
+		lookPoint = new Pivot( );
+
+		lookPoint->attachTo( pivot );
+		lookPoint->setPosition( btVector3( 0, 0, 1 ));
+
 		pathLen = 0;		
 
-		stepSounds.push_back( new Sound( "data\\sounds\\step1.ogg" ));
-		stepSounds.push_back( new Sound( "data\\sounds\\step2.ogg" ));
-		stepSounds.push_back( new Sound( "data\\sounds\\step3.ogg" ));
-		stepSounds.push_back( new Sound( "data\\sounds\\step4.ogg" ));	
+		stepsEmitter->addSoundToGroup( "step", pfCreateSound( pfDataLoad( "data\\sounds\\step1.ogg" ), true ));
+		stepsEmitter->addSoundToGroup( "step", pfCreateSound( pfDataLoad( "data\\sounds\\step2.ogg" ), true ));
+		stepsEmitter->addSoundToGroup( "step", pfCreateSound( pfDataLoad( "data\\sounds\\step3.ogg" ), true ));
+		stepsEmitter->addSoundToGroup( "step", pfCreateSound( pfDataLoad( "data\\sounds\\step4.ogg" ), true ));
 
 		flashlight = new PointLight;
 		flashlight->setDiffuseColor( Color( 255, 255, 255, 255 ));
 		flashlight->setRange( 0.001 );
 		flashlight->attachTo( getCamera() );	
-
-		SoundChannel * music = (new Sound( "data\\music\\notch.ogg" ))->play( camera );
 	};
 
 	Camera * getCamera()
@@ -704,20 +731,17 @@ class World
 public:
 	ProLevel * curLevel;
 	Player   * player;
-	SoundCore * sndcore;
 
 	World( )
 	{
 		curLevel = 0;
 		player = 0;
-		sndcore = new SoundCore;
 	};
 
 	~World( )
 	{
 		delete curLevel;
 		delete player;
-		delete sndcore;
 	};
 
 	void setLevel( ProLevel * lev )
@@ -730,9 +754,6 @@ public:
 		player = p;
 
 		player->getPivot()->attachTo( curLevel->root );
-
-		Listener * listener = new Listener;
-		listener->attachTo( player->getCamera() );
 	};
 
 	void update( )
@@ -754,12 +775,11 @@ void compute2DScaleFactor( )
 	hScaleFactor = info->current_h / (float) defResH;
 };
 
-World * world = 0;
-Player * player = 0;
-
 namespace Script
 {
 	using namespace Dynamic;
+
+	vector< uint > loopSounds;
 
 	void addForce( Function::ArgumentList & args )
 	{
@@ -777,6 +797,32 @@ namespace Script
 		}
 	};
 
+	void hideObject( Function::ArgumentList & args )
+	{
+		if( args.size() < 1 ) // node_name 
+			return;
+
+		SceneNode * node = Scene::getInstance()->getRoot()->findByNameProp( args.at( 0 ) );
+
+		if( node )
+		{
+			node->hide();
+		}
+	};
+
+	void showObject( Function::ArgumentList & args )
+	{
+		if( args.size() < 1 ) // node_name 
+			return;
+
+		SceneNode * node = Scene::getInstance()->getRoot()->findByNameProp( args.at( 0 ) );
+
+		if( node )
+		{
+			node->show();
+		}
+	};
+
 	void placeNear( Function::ArgumentList & args )
 	{
 		if( args.size() < 2 ) // node_name node_name_where_placed
@@ -789,6 +835,76 @@ namespace Script
 		{
 			src->setGlobalPosition( dst->getGlobalPosition( true ));
 		}
+	};
+
+	void disableAllLights( Function::ArgumentList & args )
+	{
+		globalRenderFlags &= ~GRF_USELIGHT;
+	};
+
+	void enableLights( Function::ArgumentList & args )
+	{
+		globalRenderFlags |= GRF_USELIGHT;
+	};
+
+	void turnoffLight(  Function::ArgumentList & args )
+	{
+		if( args.size() < 1 ) // node_name
+			return;
+
+		SceneNode * src = Scene::getInstance()->getRoot()->findByNameProp( args.at( 0 ) );
+
+		Light * lit = dynamic_cast<Light*>( src->getChild( 0 ) );
+
+		if( lit )
+		{
+			lit->setRangeMult( 0.0 );
+		};
+	};
+
+	void turnoffParticleSystem(  Function::ArgumentList & args )
+	{
+		if( args.size() < 1 ) // node_name
+			return;
+
+		SceneNode * src = Scene::getInstance()->getRoot()->findByNameProp( args.at( 0 ) );
+
+		ParticleSystem * ps = dynamic_cast<ParticleSystem*>( src->getChild( 0 ) );
+
+		if( ps )
+		{
+			ps->hide();
+		};
+	};
+
+	void turnonParticleSystem(  Function::ArgumentList & args )
+	{
+		if( args.size() < 1 ) // node_name
+			return;
+
+		SceneNode * src = Scene::getInstance()->getRoot()->findByNameProp( args.at( 0 ) );
+
+		ParticleSystem * ps = dynamic_cast<ParticleSystem*>( src->getChild( 0 ) );
+
+		if( ps )
+		{
+			ps->show();
+		};
+	};
+
+	void turnonLight(  Function::ArgumentList & args )
+	{
+		if( args.size() < 1 ) // node_name
+			return;
+
+		SceneNode * src = Scene::getInstance()->getRoot()->findByNameProp( args.at( 0 ) );
+
+		Light * lit = dynamic_cast<Light*>( src->getChild( 0 ) );
+
+		if( lit )
+		{
+			lit->setRangeMult( 1 );
+		};
 	};
 
 	void enableTrigger( Function::ArgumentList & args )
@@ -823,6 +939,7 @@ namespace Script
 		}
 	};
 
+
 	void addNote( Function::ArgumentList & args )
 	{
 		if( args.size() < 1 ) // note
@@ -831,13 +948,93 @@ namespace Script
 		player->notes->addNote( args.at( 0 ));
 	};
 
+	void playSound( Function::ArgumentList & args )
+	{
+		if( args.size() < 2 ) // file_name emitter_name 
+			return;
+
+		SceneNode * emitter = Scene::getInstance()->getRoot()->findByNameProp( args.at( 1 ) );
+
+		Sound snd = pfCreateSound( pfDataLoad( args.at( 0 ).c_str()), true, true );
+		pfPlaySound( snd, true );
+		pfSetSoundPosition( snd, emitter->getGlobalPosition( true ).x(), emitter->getGlobalPosition( true ).y(), emitter->getGlobalPosition( true ).z() );
+		pfSetSoundVolume( snd, 0.7 ); // special for screamers
+	};
+
+	void playSoundLoop( Function::ArgumentList & args )
+	{
+		if( args.size() < 2 ) // file_name emitter_name [2d] [volume]
+			return;
+
+		SceneNode * emitter = Scene::getInstance()->getRoot()->findByNameProp( args.at( 1 ) );
+
+		bool two = false;
+
+		if( args.size() > 1 )
+			two = atoi( args.at( 2 ).c_str());
+
+		Sound snd = pfCreateSound( pfDataLoad( args.at( 0 ).c_str()), two, true );
+		pfPlaySound( snd, true );
+
+		if( !two )
+			pfSetSoundPosition( snd, emitter->getGlobalPosition( true ).x(), emitter->getGlobalPosition( true ).y(), emitter->getGlobalPosition( true ).z() );
+
+		if( args.size() > 2 ) 
+			pfSetSoundVolume( snd, atof( args.at( 3 ).c_str() ) ); // special for screamers
+
+		loopSounds.push_back( snd );
+	};
+
+	void playSoundEx( Function::ArgumentList & args )
+	{
+		if( args.size() < 3 ) // file_name emitter_name volume
+			return;
+
+		SceneNode * emitter = Scene::getInstance()->getRoot()->findByNameProp( args.at( 1 ) );
+
+		Sound snd = pfCreateSound( pfDataLoad( args.at( 0 ).c_str()), true, true );
+		pfPlaySound( snd, true );
+		pfSetSoundPosition( snd, emitter->getGlobalPosition( true ).x(), emitter->getGlobalPosition( true ).y(), emitter->getGlobalPosition( true ).z() );
+		pfSetSoundVolume( snd, atof( args.at( 2 ).c_str() ) ); // special for screamers
+	};
+
+	void play2DSound( Function::ArgumentList & args )
+	{
+		if( args.size() < 2 ) // file_name volume
+			return;
+		
+		Sound snd = pfCreateSound( pfDataLoad( args.at( 0 ).c_str()), 0, true );
+		pfPlaySound( snd, true );
+		pfSetSoundVolume( snd, atof( args.at( 1 ).c_str() ) ); // special for screamers
+	};
+
 	int registerAllFunctions( )
 	{
 		Function::Register( "addForce", addForce );
 		Function::Register( "placeNear", placeNear );
+
 		Function::Register( "addNote", addNote );
+
 		Function::Register( "enableTrigger", enableTrigger );
 		Function::Register( "disableTrigger", disableTrigger );
+
+		Function::Register( "playSound", playSound );
+		Function::Register( "playSoundEx", playSoundEx );
+		Function::Register( "play2DSound", play2DSound );
+		Function::Register( "playSoundLoop", playSoundLoop );	
+
+		Function::Register( "disableAllLights", disableAllLights );
+		Function::Register( "enableLights", enableLights );
+
+		Function::Register( "turnonLight", turnonLight );
+		Function::Register( "turnoffLight", turnoffLight );
+
+		Function::Register( "turnonParticleSystem", turnonParticleSystem );
+		Function::Register( "turnoffParticleSystem", turnoffParticleSystem );
+
+		Function::Register( "hideObject", hideObject );
+		Function::Register( "showObject", showObject );
+
 		return 1;
 	};
 
@@ -864,12 +1061,26 @@ namespace Script
 					if( !node->hasProperty( "trigDistance" ))
 						node->addProperty( "trigDistance", "10" );
 				};
+
+				if( node->getProperty( "type" ).getStr() == "permanentTrigger" )
+				{
+					triggers.push_back( node );
+				}
+
 			}
 		};
 	};
 	
 	void updateAllTriggers( )
 	{
+		for( auto it = loopSounds.begin(); it != loopSounds.end(); it++ )
+		{
+			if( !pfIsSoundPlaying( *it ))
+			{
+				pfPlaySound( *it, true );
+			}
+		};
+
 		for( uint i = 0; i < triggers.size(); i++ )
 		{
 			SceneNode * trig = triggers.at( i );
@@ -899,10 +1110,29 @@ namespace Script
 						}					
 					};
 				}
+
+				if( trig->getProperty( "type" ).getStr() == "permanentTrigger" )
+				{
+					if( trig->getProperty( "noDisable" ).getStr() == "0" )
+						trig->setProperty( "enabled", Value( "0" ));
+
+					for( auto func = trig->properties.begin(); func != trig->properties.end(); func++ )
+					{
+						Function::ArgumentList args; string funcName; 
+
+						if( func->first.find( "action" ) != string::npos )
+						{
+							Parser::parseFunction( func->second, funcName, args );
+							Function::Call( funcName, args );
+						}
+					}					
+				}
+
 			};
 		}
 	};
 };
+
 
 int main(int argc, char *argv[])
 {	
@@ -911,8 +1141,15 @@ int main(int argc, char *argv[])
 	Renderer * renderer = new Renderer( 
 		static_cast<unsigned int>( generalParameters[ "width" ].getNum() ), 
 		static_cast<unsigned int>( generalParameters[ "height" ].getNum() ), 
-		static_cast<unsigned int>( generalParameters[ "fullscreen" ].getNum() ) );	
-	
+		static_cast<unsigned int>( generalParameters[ "fullscreen" ].getNum() ) );		
+
+	pfSetListenerSetEAXPreset( PRESET_FOREST );
+
+	//Sound music = pfCreateSound( pfDataLoad( "data\\music\\notch.ogg", true ) );
+
+	pfSetListenerDopplerFactor( 0 );
+	pfSetListenerRolloffFactor( 0.18 );
+
 	compute2DScaleFactor();
 
 	const SDL_VideoInfo * info = SDL_GetVideoInfo();	
@@ -965,13 +1202,16 @@ int main(int argc, char *argv[])
 	helpNode->setScaler( 0.5, 0.5 );
 
 	Script::registerAllFunctions();
-	
+
+	TextNode * debugText = new TextNode( font, 20, 120, "" );
+	debugText->setScaler( 0.5, 0.5 );
+
 	while( true )
 	{
 		renderer->update();
 
 		renderer->beginRender();
-
+		
 		if( keyboard.keyPressed( SDLK_ESCAPE ))
 		{
 			menuRoot->show();
@@ -1025,7 +1265,6 @@ int main(int argc, char *argv[])
 		if( !menuRoot->isVisible() )
 		{
 			world->update();
-			SoundChannel::updateAll();
 			Scene::getInstance()->render3D();
 		};
 		

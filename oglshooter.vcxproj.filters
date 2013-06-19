@@ -7,6 +7,12 @@
     <Filter Include="Script">
       <UniqueIdentifier>{a441375f-82ce-4a3d-bdcc-f0585351146e}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Particles">
+      <UniqueIdentifier>{7117952d-3df7-4123-ba48-915a1723fc73}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Shaders">
+      <UniqueIdentifier>{d465e9e2-5432-4568-88ea-f965793489df}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Camera.cpp" />
@@ -38,6 +44,7 @@
     <ClCompile Include="ButtonNode.cpp">
       <Filter>GUI</Filter>
     </ClCompile>
+    <ClCompile Include="Shader.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Vertex.h" />
@@ -48,7 +55,6 @@
     <ClInclude Include="Engine.h" />
     <ClInclude Include="Keyboard.h" />
     <ClInclude Include="Light.h" />
-    <ClInclude Include="Listener.h" />
     <ClInclude Include="Material.h" />
     <ClInclude Include="Mesh.h" />
     <ClInclude Include="Mouse.h" />
@@ -62,8 +68,6 @@
     <ClInclude Include="Scene.h" />
     <ClInclude Include="SceneNode.h" />
     <ClInclude Include="Service.h" />
-    <ClInclude Include="Sound.h" />
-    <ClInclude Include="SoundCore.h" />
     <ClInclude Include="Surface.h" />
     <ClInclude Include="Texture.h" />
     <ClInclude Include="Vector4.h" />
@@ -88,8 +92,18 @@
     <ClInclude Include="Scripting.h">
       <Filter>Script</Filter>
     </ClInclude>
+    <ClInclude Include="ParticleSystem.h">
+      <Filter>Particles</Filter>
+    </ClInclude>
+    <ClInclude Include="Shader.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="default.cfg" />
+    <None Include="data\shaders\main.fs">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="data\shaders\main.vs">
+      <Filter>Shaders</Filter>
+    </None>
   </ItemGroup>
 </Project>

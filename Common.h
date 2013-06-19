@@ -16,10 +16,9 @@
 #include <iostream>
 #include <vld.h>
 #include <map>
-#include "al.h"
-#include "alc.h"
-#include "thirdparty\Ogg\ogg.h"
-#include "thirdparty\Vorbis\vorbisfile.h"
+
+#include "ProjectF/ProjectF.h"
+#pragma comment( lib, "ProjectF/ProjectF.lib" )
 
 #include "btBulletCollisionCommon.h"
 #include "btBulletDynamicsCommon.h"
@@ -33,10 +32,6 @@
 #pragma comment( lib, "glu32" )
 #pragma comment( lib, "glaux" )
 #pragma comment( lib, "vld" )
-#pragma comment( lib, "openal32" )
-#pragma comment( lib, "thirdparty/ogg/libogg_static.lib" )
-#pragma comment( lib, "thirdparty/vorbis/libvorbis_static.lib" )
-#pragma comment( lib, "thirdparty/vorbis/libvorbisfile_static.lib" )
 
 #ifndef _DEBUG
 
@@ -54,10 +49,20 @@
 
 class Keyboard;
 class Mouse;
+class World;
+class Player;
 
 extern btDiscreteDynamicsWorld * dynamicsWorld;
 extern Keyboard keyboard;
 extern Mouse mouse;
+extern World * world;
+extern Player * player;
+extern unsigned int globalRenderFlags;
+
+enum
+{
+	GRF_USELIGHT = 1,
+};
 
 typedef unsigned int uint;
 typedef unsigned short ushort;
@@ -68,3 +73,28 @@ typedef unsigned char byte;
 #define RAD2DEG ( 180.0f / 3.141592654f )
 
 using namespace std;
+
+static int random( int min, int max )
+{
+	return rand() * ( max - min ) / RAND_MAX + min;
+};
+
+extern PFNGLCREATESHADERPROC glCreateShader;
+extern PFNGLDELETESHADERPROC glDeleteShader;
+extern PFNGLSHADERSOURCEPROC glShaderSource;
+extern PFNGLCOMPILESHADERPROC glCompileShader;
+extern PFNGLCREATEPROGRAMPROC glCreateProgram;
+extern PFNGLDELETEPROGRAMPROC glDeleteProgram;
+extern PFNGLATTACHSHADERPROC glAttachShader;
+extern PFNGLLINKPROGRAMPROC glLinkProgram;
+extern PFNGLUSEPROGRAMPROC glUseProgram;
+extern PFNGLGETSHADERINFOLOGPROC glGetShaderInfoLog;
+
+extern PFNGLACTIVETEXTUREPROC glActiveTexture;
+extern PFNGLGETUNIFORMLOCATIONPROC glGetUniformLocation;
+extern PFNGLUNIFORM1IPROC glUniform1i;
+
+class Shader;
+
+extern Shader * g_default_shader;
+

@@ -1,0 +1,17 @@
+﻿Build started 20.06.2013 0:56:49.
+     1>Project "C:\Users\mrDIMAS\Desktop\SOGLE\Simple-OpenGL-Engine\oglshooter.vcxproj" on node 2 (build target(s)).
+     1>InitializeBuildStatus:
+         Creating "Release\SOGLE.unsuccessfulbuild" because "AlwaysCreate" was specified.
+       ClCompile:
+         All outputs are up-to-date.
+       Link:
+         All outputs are up-to-date.
+         oglshooter.vcxproj -> C:\Users\mrDIMAS\Desktop\SOGLE\Simple-OpenGL-Engine\Release\SOGLE.exe
+       FinalizeBuildStatus:
+         Deleting file "Release\SOGLE.unsuccessfulbuild".
+         Touching "Release\SOGLE.lastbuildstate".
+     1>Done Building Project "C:\Users\mrDIMAS\Desktop\SOGLE\Simple-OpenGL-Engine\oglshooter.vcxproj" (build target(s)).
+
+Build succeeded.
+
+Time Elapsed 00:00:00.10

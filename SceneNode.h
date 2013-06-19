@@ -4,74 +4,18 @@
 #include "RigidBody.h"
 #include "PickSphere.h"
 #include "Scripting.h"
+#include "Shader.h"
 
 using namespace Dynamic;
-/*
-#include <unordered_map>
-
-class Value
-{
-private:
-	string val;
-public:
-	Value( )
-	{
-	};
-
-	Value( const string & value )
-	{
-		setAsString( value );
-	};
-
-	Value( const float & value )
-	{
-		setAsNumber( value );
-	};
-
-	void setAsString( const string & value )
-	{
-		val = value;
-	};
-
-	void setAsNumber( const float & value )
-	{
-		char buf[ 32 ] = { 0 };	sprintf( buf, "%f", value );
-		val = buf;
-	};
-
-	string getAsString( )
-	{
-		return val;
-	};
-
-	float getAsNumber( )
-	{
-		return atof( val.c_str() );
-	};
-
-	operator const char * ()
-	{
-		return val.c_str();
-	};
-
-	operator string () 
-	{
-		return val;
-	};
-
-	bool operator == ( const Value & value )
-	{
-		return val == value.val;
-	};
-};*/
 
 class SceneNode
 {
 protected:
-	btTransform globalTransform;
+	
 	btTransform localTransform;
 	btVector3 scale;
 	vector< SceneNode* > childs;
+	Shader * shader;
 	RigidBody * body;
 	PickObject * pickObj;
 	SceneNode * parent;
@@ -82,8 +26,25 @@ protected:
 	friend class Scene;
 	bool visible;
 	void applyChangesRelatively();
-	//unordered_map< string, Value> properties;	
+	map<string,vector<Sound>> sounds;
+	void syncSounds( )
+	{
+		float x = globalTransform.getOrigin().x();
+		float y = globalTransform.getOrigin().y();
+		float z = globalTransform.getOrigin().z();
+
+		for( auto group = sounds.begin(); group != sounds.end(); group++ )
+		{
+			vector< Sound > & gr = group->second;
+
+			for( uint i = 0; i < gr.size(); i++ )
+			{
+				pfSetSoundPosition( gr.at( i ), x, y, z );
+			};
+		};
+	};
 public:
+	btTransform globalTransform;
 	Dynamic::Parser::ValueMap properties;	
 	static vector<SceneNode*> nodes;
 	SceneNode( );	
@@ -111,7 +72,22 @@ public:
 	void setName( string &newName );
 	void hide();
 	void show( ) ;
+
+	void addSoundToGroup( string groupName, Sound snd )
+	{
+		sounds[ groupName ].push_back( snd );
+	};
 	
+	void playSoundFromGroup( string groupName, uint n, bool oneshot = true )
+	{
+		pfPlaySound( sounds[ groupName ].at( n ), oneshot );
+	};
+
+	void playRandomSoundFromGroup( string groupName, bool oneshot = true )
+	{
+		pfPlaySound( sounds[ groupName ].at( rand() % sounds[ groupName ].size() ), oneshot );
+	};
+
 	SceneNode * findByNameProp( string & name )
 	{
 		

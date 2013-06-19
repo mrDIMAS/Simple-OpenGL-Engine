@@ -25,6 +25,8 @@ void SceneNode::renderNodeAndChilds( )
 
 	glPopMatrix(); // Restore matrix
 
+	syncSounds();
+
 	// Render childs
 	for( uint i = 0; i < childs.size(); i++ )
 		childs.at( i )->renderNodeAndChilds();	
@@ -117,6 +119,7 @@ SceneNode::SceneNode( )
 	body   = 0;
 	pickObj= 0;
 	userPointer = 0;
+	shader = g_default_shader;
 	show();
 	scale = btVector3( 1, 1, 1 );
 	localTransform.setIdentity( );

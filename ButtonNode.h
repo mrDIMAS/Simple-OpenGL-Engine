@@ -7,6 +7,8 @@ class ButtonNode: public RectNode
 {
 	RectNode * frame;
 	TextNode * text;
+	bool focus;
+	//Sound focusSound;
 public:
 	TextNode * getText( )
 	{

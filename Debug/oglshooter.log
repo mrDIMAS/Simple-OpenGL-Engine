@@ -1,0 +1,56 @@
+﻿Build started 20.06.2013 0:23:00.
+     1>Project "C:\Users\mrDIMAS\Desktop\SOGLE\Simple-OpenGL-Engine\oglshooter.vcxproj" on node 2 (build target(s)).
+     1>InitializeBuildStatus:
+         Creating "Debug\SOGLE.unsuccessfulbuild" because "AlwaysCreate" was specified.
+       ClCompile:
+         C:\Program Files (x86)\Microsoft Visual Studio 10.0\VC\bin\CL.exe /c /I"C:\Develop\SDL-devel-1.2.15-VC\SDL-1.2.15\include" /I"C:\Develop\Bullet Physics\src" /I"C:\Program Files (x86)\OpenAL 1.1 SDK\include" /ZI /nologo /W3 /WX- /Od /Oy- /D WIN32 /D _DEBUG /D _CONSOLE /D _UNICODE /D UNICODE /Gm /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Fo"Debug\\" /Fd"Debug\vc100.pdb" /Gd /TP /analyze- /errorReport:prompt Mesh.cpp
+         Mesh.cpp
+     1>c:\users\mrdimas\desktop\sogle\simple-opengl-engine\scripting.h(51): warning C4996: 'sprintf': This function or variable may be unsafe. Consider using sprintf_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+                 c:\program files (x86)\microsoft visual studio 10.0\vc\include\stdio.h(371) : see declaration of 'sprintf'
+     1>c:\users\mrdimas\desktop\sogle\simple-opengl-engine\scripting.h(143): warning C4018: '>=' : signed/unsigned mismatch
+     1>c:\users\mrdimas\desktop\sogle\simple-opengl-engine\scripting.h(150): warning C4996: 'fopen': This function or variable may be unsafe. Consider using fopen_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+                 c:\program files (x86)\microsoft visual studio 10.0\vc\include\stdio.h(234) : see declaration of 'fopen'
+     1>c:\users\mrdimas\desktop\sogle\simple-opengl-engine\scripting.h(230): warning C4018: '>=' : signed/unsigned mismatch
+     1>c:\users\mrdimas\desktop\sogle\simple-opengl-engine\scripting.h(302): warning C4018: '>=' : signed/unsigned mismatch
+     1>c:\users\mrdimas\desktop\sogle\simple-opengl-engine\shader.h(13): warning C4996: 'fopen': This function or variable may be unsafe. Consider using fopen_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+                 c:\program files (x86)\microsoft visual studio 10.0\vc\include\stdio.h(234) : see declaration of 'fopen'
+     1>c:\users\mrdimas\desktop\sogle\simple-opengl-engine\mesh.cpp(78): warning C4996: 'fopen': This function or variable may be unsafe. Consider using fopen_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+                 c:\program files (x86)\microsoft visual studio 10.0\vc\include\stdio.h(234) : see declaration of 'fopen'
+       ManifestResourceCompile:
+         All outputs are up-to-date.
+       Link:
+         C:\Program Files (x86)\Microsoft Visual Studio 10.0\VC\bin\link.exe /ERRORREPORT:PROMPT /OUT:"C:\Users\mrDIMAS\Desktop\SOGLE\Simple-OpenGL-Engine\Debug\SOGLE.exe" /INCREMENTAL /NOLOGO /LIBPATH:"C:\Develop\Bullet Physics\lib" /LIBPATH:"C:\Develop\SDL-devel-1.2.15-VC\SDL-1.2.15\lib\x86" /LIBPATH:"C:\Program Files (x86)\OpenAL 1.1 SDK\libs\Win32" kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /MANIFEST /ManifestFile:"Debug\SOGLE.exe.intermediate.manifest" /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /DEBUG /PDB:"C:\Users\mrDIMAS\Desktop\SOGLE\Simple-OpenGL-Engine\Debug\SOGLE.pdb" /SUBSYSTEM:CONSOLE /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"C:\Users\mrDIMAS\Desktop\SOGLE\Simple-OpenGL-Engine\Debug\SOGLE.lib" /MACHINE:X86 Debug\SOGLE.exe.embed.manifest.res
+         Debug\ButtonNode.obj
+         Debug\Camera.obj
+         Debug\Font.obj
+         Debug\game.obj
+         Debug\GUINode.obj
+         Debug\ImageNode.obj
+         Debug\Keyboard.obj
+         Debug\Light.obj
+         Debug\Mesh.obj
+         Debug\Mouse.obj
+         Debug\RectNode.obj
+         Debug\Scene.obj
+         Debug\SceneNode.obj
+         Debug\Shader.obj
+         Debug\Surface.obj
+         Debug\TextNode.obj
+         Debug\Texture.obj
+         Debug\Vertex.obj
+     1>LINK : warning LNK4098: defaultlib 'LIBCMTD' conflicts with use of other libs; use /NODEFAULTLIB:library
+     1>MSVCRTD.lib(cinitexe.obj) : warning LNK4098: defaultlib 'msvcrt.lib' conflicts with use of other libs; use /NODEFAULTLIB:library
+       Manifest:
+         C:\Program Files (x86)\Microsoft SDKs\Windows\v7.0A\bin\mt.exe /nologo /verbose /out:"Debug\SOGLE.exe.embed.manifest" /manifest Debug\SOGLE.exe.intermediate.manifest
+         All outputs are up-to-date.
+       LinkEmbedManifest:
+         All outputs are up-to-date.
+         oglshooter.vcxproj -> C:\Users\mrDIMAS\Desktop\SOGLE\Simple-OpenGL-Engine\Debug\SOGLE.exe
+       FinalizeBuildStatus:
+         Deleting file "Debug\SOGLE.unsuccessfulbuild".
+         Touching "Debug\SOGLE.lastbuildstate".
+     1>Done Building Project "C:\Users\mrDIMAS\Desktop\SOGLE\Simple-OpenGL-Engine\oglshooter.vcxproj" (build target(s)).
+
+Build succeeded.
+
+Time Elapsed 00:00:08.33

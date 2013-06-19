@@ -2,9 +2,21 @@
 
 void Mesh::render( )
 {
-	applyTransform();
+	if( globalRenderFlags & GRF_USELIGHT )
+	{
+		glEnable( GL_LIGHTING );
+	}
 
-	glPushAttrib( GL_CULL_FACE );
+	if( shader )
+	{
+		shader->bind();
+
+		glActiveTexture( GL_TEXTURE0 );		
+		int texLoc = glGetUniformLocation( shader->program_id, "diffTex" );
+		glUniform1i( texLoc, 0);
+	};
+
+	applyTransform();
 	
 	if( flags & RF_TWOSIDED )
 	{
@@ -12,15 +24,23 @@ void Mesh::render( )
 		glLightModeli( GL_LIGHT_MODEL_TWO_SIDE, GL_TRUE );
 	};
 
+	if( flags & RF_DONTUSELIGHT )
+	{
+		glDisable( GL_LIGHTING );
+	}
+
 	for( uint i = 0; i < surfaces.size(); i++ )
 	{
 		surfaces[ i ]->render();
-	};			
+	};		
 
-	//glLightModeli( GL_LIGHT_MODEL_TWO_SIDE, 0 );
-
-	glPopAttrib();
-	glPopAttrib();
+	if( globalRenderFlags & GRF_USELIGHT )
+	{
+		glEnable( GL_LIGHTING );
+	}
+	
+	if( shader )
+		Shader::unbind();
 };
 
 Mesh::Mesh()
@@ -40,8 +60,6 @@ void Mesh::addSurface( Surface * surface )
 {
 	surfaces.push_back( surface );
 };
-	
-
 
 void Mesh::setTexture( Texture * texture )
 {
@@ -51,7 +69,7 @@ void Mesh::setTexture( Texture * texture )
 	};
 };
 	
-void Mesh::loadEO( const char * filename )
+void Mesh::loadEO( const char * filename ) // can be very slow in debug-mode! be careful
 {
 	string pathToRes = getPathFromFromFileName( filename );
 

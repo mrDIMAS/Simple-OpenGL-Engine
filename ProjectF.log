@@ -1,0 +1,98 @@
+PF Event: ===== PF Initializing =====
+PF Event: Available devices: Динамики (SoundMAX Integrated Digital HD Audio)
+PF Event: Using 'Generic Hardware' render mode
+PF Event: OpenAL initialization...
+PF Event: Device initialized successfully!
+PF Event: Context created successfully!
+PF Event: ======= DEVICE SPECS ========
+PF Event: Frequency: 44100
+PF Event: Refresh rate: 40
+PF Event: Max mono sources: 0
+PF Event: Max stereo sources: 256
+PF Event: EFX extension supported!
+PF Event: alGenEffects Yes
+PF Event: alGenFilters Yes
+PF Event: alFilterf Yes
+PF Event: alFilteri Yes
+PF Event: alGetFilterf Yes
+PF Event: alDeleteEffects Yes
+PF Event: alIsEffect Yes
+PF Event: alGenAuxiliaryEffectSlots Yes
+PF Event: alEffecti Yes
+PF Event: alEffectf Yes
+PF Event: alAuxiliaryEffectSloti Yes
+PF Event: alDeleteAuxiliaryEffectSlots Yes
+PF Event: alEffectfv Yes
+PF Event: Trying generate new effect slot... OK
+PF Event: Trying generate new effect... OK
+PF Event: Loading ogg file: 'data/sounds/menuhit.ogg'
+PF Event: Trying to allocate buffer...
+PF Event: Converting data to stereo...
+PF Event: Success
+PF Event: Loading ogg file: 'data/sounds/menuhit.ogg'
+PF Event: Trying to allocate buffer...
+PF Event: Using existing buffer for 'data/sounds/menuhit.ogg'
+PF Event: Success
+PF Event: Loading ogg file: 'data/sounds/note.ogg'
+PF Event: Trying to allocate buffer...
+PF Event: Converting data to stereo...
+PF Event: Success
+PF Event: Loading ogg file: 'data\sounds\step1.ogg'
+PF Event: Trying to allocate buffer...
+PF Event: Success
+PF Event: Loading ogg file: 'data\sounds\step2.ogg'
+PF Event: Trying to allocate buffer...
+PF Event: Success
+PF Event: Loading ogg file: 'data\sounds\step3.ogg'
+PF Event: Trying to allocate buffer...
+PF Event: Success
+PF Event: Loading ogg file: 'data\sounds\step4.ogg'
+PF Event: Trying to allocate buffer...
+PF Event: Success
+PF Event: Loading ogg file: 'data/sounds/wind.ogg'
+PF Event: Trying to allocate buffer...
+PF Event: Converting data to stereo...
+PF Event: Success
+PF Event: Sound '0' deleted!
+PF Event: Sound '1' deleted!
+PF Event: Sound '2' deleted!
+PF Event: Loading wav file: 'data/sounds/hit.wav'
+PF Event: Trying to allocate buffer...
+PF Event: Converting data to mono...
+PF Event: Success
+PF Event: Sound '8' deleted!
+PF Event: Loading ogg file: 'data/sounds/scream1.ogg'
+PF Event: Trying to allocate buffer...
+PF Event: Success
+PF Event: Loading ogg file: 'data/sounds/eerie.ogg'
+PF Event: Trying to allocate buffer...
+PF Event: Converting data to stereo...
+PF Event: Success
+PF Event: Loading ogg file: 'data/sounds/note.ogg'
+PF Event: Trying to allocate buffer...
+PF Event: Using existing buffer for 'data/sounds/note.ogg'
+PF Event: Success
+PF Event: Sound '11' deleted!
+PF Event: Sound '9' deleted!
+PF Event: Loading ogg file: 'data/sounds/growl.ogg'
+PF Event: Trying to allocate buffer...
+PF Event: Converting data to stereo...
+PF Event: Success
+PF Event: Loading ogg file: 'data/sounds/menuhit.ogg'
+PF Event: Trying to allocate buffer...
+PF Event: Using existing buffer for 'data/sounds/menuhit.ogg'
+PF Event: Success
+PF Error: Sound with '0' identifier not found!
+PF Error: Sound with '1' identifier not found!
+PF Error: Sound with '2' identifier not found!
+PF Event: Sound '3' deleted!
+PF Event: Sound '4' deleted!
+PF Event: Sound '5' deleted!
+PF Event: Sound '6' deleted!
+PF Event: Sound '7' deleted!
+PF Error: Sound with '8' identifier not found!
+PF Error: Sound with '9' identifier not found!
+PF Event: Sound '10' deleted!
+PF Error: Sound with '11' identifier not found!
+PF Event: Sound '12' deleted!
+PF Event: Sound '13' deleted!

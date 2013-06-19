@@ -5,6 +5,15 @@ void Camera::render( )
 	btVector3 eye  = globalTransform.getOrigin();
 	btVector3 look = eye + globalTransform.getBasis().getColumn( 2 );
 	btVector3 up   = globalTransform.getBasis().getColumn( 1 );
+	
+	btVector3 slook = globalTransform.getBasis().getColumn( 2 ).normalized();
+	btVector3 sup   = up.normalized();
+
+	float flook[ ] = { slook.x(), slook.y(), slook.z() };
+	float fup[ ] =  { sup.x(), sup.y(), sup.z() };
+
+	//pfSetListenerOrientation( flook, fup );
+	pfSetListenerPosition( eye.x(), eye.y(), eye.z() );
 
 	pickingRay->setup( eye, look );
 
